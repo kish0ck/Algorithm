@@ -71,6 +71,7 @@ loop:	while(!q.isEmpty()) {
 				
 				if((flag1&&!flag2)||(!flag1&&flag2)) {
 					ans = count+1;
+					if(ans>10) ans=-1;
 					break loop;
 				}else if(flag1&&flag2) {
 					
