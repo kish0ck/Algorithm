@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
-
+// 2020-07-02
 public class BOJ_16948_데스나이트_Main {
 
 	public static void main(String[] args) throws NumberFormatException, IOException {
