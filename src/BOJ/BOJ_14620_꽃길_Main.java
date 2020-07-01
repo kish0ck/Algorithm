@@ -16,7 +16,6 @@ public class BOJ_14620_꽃길_Main {
 	private static int[] dx;
 	private static int[] dy;
 	private static int[][] map;
-	private static List<int[]> list;
 
 	public static void main(String[] args) throws NumberFormatException, IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -32,7 +31,6 @@ public class BOJ_14620_꽃길_Main {
 		dx = new int[] {0,0,1,-1};
 		dy = new int[] {1,-1,0,0};
 		visited = new boolean[N][N];
-		list = new ArrayList<int[]>();
 		ans = Integer.MAX_VALUE;
 		go(0,0);
 		System.out.println(ans);
