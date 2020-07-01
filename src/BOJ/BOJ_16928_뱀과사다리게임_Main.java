@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
+// 2020-07-01
 public class BOJ_16928_뱀과사다리게임_Main {
 
 	public static void main(String[] args) throws IOException {
