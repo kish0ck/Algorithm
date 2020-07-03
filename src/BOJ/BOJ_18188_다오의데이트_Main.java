@@ -3,9 +3,7 @@ package BOJ;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
@@ -29,11 +27,8 @@ public class BOJ_18188_다오의데이트_Main {
 			marid[i][0] = st.nextToken().charAt(0);
 			marid[i][1] = st.nextToken().charAt(0);
 		}
-		int[] dr = {0,0,1,-1};
-		int[] dc = {1,-1,0,0};
 		boolean flag = false;
 		String answer2 = "";
-		List<String> ans = new ArrayList<String>(); 
 loop:	for (int i = 0; i < H; i++) {
 			for (int j = 0; j < W; j++) {
 				if(map[i][j]=='D') {
