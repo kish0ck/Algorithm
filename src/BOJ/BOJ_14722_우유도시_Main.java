@@ -41,6 +41,8 @@ public class BOJ_14722_우유도시_Main {
 		if(flag) {
 			now_milk = 1;
 		}else now_milk = 0;
+		
+		
 		for (int i = 1; i < N; i++) {
 			dp[i][0]=dp[i-1][0].clone();
 			if(map[i][0]==now_milk) {
