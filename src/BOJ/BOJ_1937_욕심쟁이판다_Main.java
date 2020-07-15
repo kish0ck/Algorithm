@@ -9,7 +9,7 @@ import java.util.Iterator;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
-public class RE_BOJ_1937_욕심쟁이판다_Main {
+public class BOJ_1937_욕심쟁이판다_Main {
 
 	public static void main(String[] args) throws NumberFormatException, IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
