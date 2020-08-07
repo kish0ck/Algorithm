@@ -45,9 +45,7 @@ public class BOJ_9663_NQueen_Main {
 	private static boolean check(int row, int col) {
 		
 		if(check_col[col]) return false;
-		
 		if(check_diagonal1[row+col]) return false;
-		
 		if(check_diagonal2[row-col+N]) return false;
 		
 		return true;
