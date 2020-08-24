@@ -16,7 +16,7 @@ public class Solution_3 {
 			int number = Integer.parseInt(st.nextToken());
 			if(!visited[number]) {
 				visited[number] = true;
-				num[number] = Function.compute(number);
+//				num[number] = Function.compute(number);
 			}
 			System.out.print(num[number]+" ");
 		}
