@@ -8,17 +8,16 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.StringTokenizer;
 
-public class fail_BOJ_15566_Main_개구리1 {
+public class BOJ_15566_개구리1_Main {
 
-	private static int[] lotus;
 	private static int N;
 	private static int M;
-	private static List<Integer> frog_love[];
-	private static int[][] frog_interest;
-	private static int[][] frog_lotus;
-	private static int[][] log_info;
 	private static boolean flag;
+	private static int[] lotus;
 	private static boolean[] visited;
+	private static List<Integer> frog_lotus[];
+	private static int[][] log_info;
+	private static int[][] frog_interest;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -27,12 +26,11 @@ public class fail_BOJ_15566_Main_개구리1 {
 		M = Integer.parseInt(st.nextToken()); //0 ≤ M ≤ min(N(N-1)/2, 100)
 		
 		frog_interest = new int[N][4];
-		frog_lotus = new int[N][2];
+		frog_lotus = new ArrayList[N]; // 개구리가 선호하는 연꽃
 		log_info = new int[M][3];
-		frog_love = new ArrayList[N];
 		
-		for (int i = 0; i < frog_love.length; i++) {
-			frog_love[i] = new ArrayList<Integer>();
+		for (int i = 0; i < N; i++) {
+			frog_lotus[i] = new ArrayList<Integer>();
 		}
 		
 		for (int i = 0; i < N; i++) {
@@ -46,10 +44,10 @@ public class fail_BOJ_15566_Main_개구리1 {
 			st = new StringTokenizer(br.readLine()," ");
 			for (int j = 0; j < 2; j++) {
 				int a = Integer.parseInt(st.nextToken())-1;
-				frog_lotus[i][j] = a;
-				if(!frog_love[i].contains(a)) frog_love[i].add(a);
+				if(!frog_lotus[i].contains(a)) frog_lotus[i].add(a);
 			}
 		}	
+		
 		for (int i = 0; i < M; i++) {
 			st = new StringTokenizer(br.readLine()," ");
 			for (int j = 0; j < 3; j++) {
@@ -58,25 +56,40 @@ public class fail_BOJ_15566_Main_개구리1 {
 		}
 		
 		flag = false;
-		lotus = new int[N]; //연꽃
-		visited = new boolean[N]; 
+		lotus = new int[N];
+		visited = new boolean[N];
 		Arrays.fill(lotus, -1);
 		
-		
-		
-loop:	for (int i = 0; i < N; i++) {
-			for (int j = 0; j < frog_love[i].size(); j++) {
-				visited[i]=true;
-				lotus[frog_love[i].get(j)] = i;
-				dfs(0);
-				if(flag) break loop;
-				visited[i]=false;
-				lotus[frog_love[i].get(j)] = -1;
+		List<Integer> frog_num = new ArrayList<Integer>();
+		for (int i = 0; i < N; i++) {
+			if(frog_lotus[i].size()==1) frog_num.add(i);
+		}
+		if(frog_num.size()==0) {
+			for (int i = 0; i < N; i++) {
+				frog_num.add(i);
 			}
 		}
 		
-		if(flag) System.out.println("YES");
-		else System.out.println("NO");
+loop:	for (int i = 0; i < frog_num.size(); i++) {
+			int frog = frog_num.get(i);
+			for (int j = 0; j < frog_lotus[frog].size(); j++) {
+				visited[frog]=true;
+				lotus[frog_lotus[frog].get(j)]=frog;
+				dfs(0);
+				if(flag) break loop;
+				visited[frog]=false;
+				lotus[frog_lotus[frog].get(j)]=-1;
+			}
+		}
+		
+	
+		
+		if(flag) {
+			System.out.println("YES");
+			for (int i = 0; i < N; i++) {
+				System.out.print((lotus[i]+1)+" ");
+			}
+		} else System.out.println("NO");
 		
 		
 		
@@ -84,21 +97,16 @@ loop:	for (int i = 0; i < N; i++) {
 	}
 
 	private static void dfs(int cnt) {
-		if(cnt==N) {
+		if(cnt==N-1) {
 			boolean flag2 = true;
-			System.out.println(Arrays.toString(lotus));
 			for (int i = 0; i < M; i++) {
-				int ycc1 = log_info[i][0];//연꽃1
-				int ycc2 = log_info[i][1];//연꽃2
-				int jj = log_info[i][2]; //주제
+				int ycc1 = log_info[i][0];
+				int ycc2 = log_info[i][1];
+				int interst = log_info[i][2];
 				
 				int frog1 = lotus[ycc1];
 				int frog2 = lotus[ycc2];
-				
-				int inter1 = frog_interest[frog1][jj];
-				int inter2 = frog_interest[frog2][jj];
-				
-				if(inter1!=inter2) {
+				if(frog_interest[frog1][interst]!=frog_interest[frog2][interst]) {
 					flag2 = false;
 					break;
 				}
@@ -106,23 +114,28 @@ loop:	for (int i = 0; i < N; i++) {
 			if(flag2) flag=true;
 			return;
 		}
-		
+
 		
 		if(flag) return;
 		for (int i = 0; i < N; i++) {
 			if(!visited[i]) {
-				for (int j = 0; j < frog_love[i].size(); j++) {
-					if(lotus[frog_love[i].get(j)]==-1) {
-						lotus[frog_love[i].get(j)]=i;
-						visited[i]=true;
+				int frog_num = i;
+				for (int j = 0; j < frog_lotus[frog_num].size(); j++) {
+					int ycc = frog_lotus[frog_num].get(j);
+					if(lotus[ycc]==-1) {
+						lotus[ycc] = frog_num;
+						visited[frog_num]= true;
 						dfs(cnt+1);
-						if(flag) break;
-						visited[i]=false;
-						lotus[frog_love[i].get(j)]=-1;
+						if(flag) return;
+						visited[frog_num]= false;
+						lotus[ycc] = -1;
 					}
 				}
 			}
 		}
+		
 	}
+
+
 
 }

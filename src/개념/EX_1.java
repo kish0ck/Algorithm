@@ -2,7 +2,7 @@ package 개념;
 
 
 // 구간 f 시작
-class EX {
+class EX_1 {
 
 	public static void main(String[] args) {
 		Employee one = new Permanent();

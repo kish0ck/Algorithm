@@ -11,8 +11,12 @@ public class OverridingOverloading {
 			public Human(String name, String sex) {}
 	//		public human(String sex, String name) {} 순서가 다르면 같은걸로 인정띠
 			public Human(String name, String sex, int age) {}
+			public Human(String name, int age, String sex) {} // 매개변수의 타입이 다를 경우는 순서가 다르면 가능
 			public void print() {
 				System.out.println("이름 : "+ this.name + ", 성별 : "+ this.sex+", 나이 : "+this.age);
+			}
+			public String print(String str) { // 매개변수는 원래 달라야하니까
+				return str;
 			}
 			public void method() {
 				System.out.println("Human");
