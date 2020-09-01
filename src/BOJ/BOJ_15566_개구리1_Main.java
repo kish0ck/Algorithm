@@ -12,130 +12,110 @@ public class BOJ_15566_개구리1_Main {
 
 	private static int N;
 	private static int M;
-	private static boolean flag;
-	private static int[] lotus;
-	private static boolean[] visited;
 	private static List<Integer> frog_lotus[];
-	private static int[][] log_info;
-	private static int[][] frog_interest;
+	private static int[] lotus;
+	private static int[][] log;
+	private static boolean result;
+	private static int[][] frog;
+	private static StringBuilder sb;
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException  {
+		// 1. 입력
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		StringTokenizer st = new StringTokenizer(br.readLine()," ");	
+		StringTokenizer st = new StringTokenizer(br.readLine()," ");
 		N = Integer.parseInt(st.nextToken());
-		M = Integer.parseInt(st.nextToken()); //0 ≤ M ≤ min(N(N-1)/2, 100)
-		
-		frog_interest = new int[N][4];
-		frog_lotus = new ArrayList[N]; // 개구리가 선호하는 연꽃
-		log_info = new int[M][3];
-		
+		M = Integer.parseInt(st.nextToken());
+		frog = new int[N][4]; // 개구리의 흥미도
+		for (int i = 0; i < N; i++) {
+			st = new StringTokenizer(br.readLine()," ");
+			for (int j = 0; j < 4; j++) {
+				frog[i][j] = Integer.parseInt(st.nextToken());
+			}
+		}
+		frog_lotus = new ArrayList[N]; // 개구리의 선호 연꽃
 		for (int i = 0; i < N; i++) {
 			frog_lotus[i] = new ArrayList<Integer>();
 		}
 		
+		// 1-1. 선호하는 연꽃이 같을경우 한번 넣어줌
 		for (int i = 0; i < N; i++) {
 			st = new StringTokenizer(br.readLine()," ");
-			for (int j = 0; j < 4; j++) {
-				frog_interest[i][j] = Integer.parseInt(st.nextToken());
+			int A = Integer.parseInt(st.nextToken())-1;
+			int B = Integer.parseInt(st.nextToken())-1;
+			if(A==B) {
+				frog_lotus[i].add(A);
+			}else {
+				frog_lotus[i].add(A);
+				frog_lotus[i].add(B);
 			}
 		}
 		
-		for (int i = 0; i < N; i++) {
-			st = new StringTokenizer(br.readLine()," ");
-			for (int j = 0; j < 2; j++) {
-				int a = Integer.parseInt(st.nextToken())-1;
-				if(!frog_lotus[i].contains(a)) frog_lotus[i].add(a);
-			}
-		}	
-		
+		log = new int[M][3]; // 통나무 정보
 		for (int i = 0; i < M; i++) {
 			st = new StringTokenizer(br.readLine()," ");
 			for (int j = 0; j < 3; j++) {
-				log_info[i][j] = Integer.parseInt(st.nextToken())-1;
+				log[i][j] = Integer.parseInt(st.nextToken())-1;
 			}
 		}
 		
-		flag = false;
+		
 		lotus = new int[N];
-		visited = new boolean[N];
 		Arrays.fill(lotus, -1);
+		result = false;  // 답확인을 위한 boolean 변수
+		sb = new StringBuilder();
 		
-		List<Integer> frog_num = new ArrayList<Integer>();
-		for (int i = 0; i < N; i++) {
-			if(frog_lotus[i].size()==1) frog_num.add(i);
-		}
-		if(frog_num.size()==0) {
-			for (int i = 0; i < N; i++) {
-				frog_num.add(i);
-			}
-		}
+		// 2. 순열
+		permutation(0);
 		
-loop:	for (int i = 0; i < frog_num.size(); i++) {
-			int frog = frog_num.get(i);
-			for (int j = 0; j < frog_lotus[frog].size(); j++) {
-				visited[frog]=true;
-				lotus[frog_lotus[frog].get(j)]=frog;
-				dfs(0);
-				if(flag) break loop;
-				visited[frog]=false;
-				lotus[frog_lotus[frog].get(j)]=-1;
-			}
-		}
-		
-	
-		
-		if(flag) {
-			System.out.println("YES");
-			for (int i = 0; i < N; i++) {
-				System.out.print((lotus[i]+1)+" ");
-			}
-		} else System.out.println("NO");
-		
-		
+		// 3. 답 출력
+		if(result) {
+			System.out.println(sb.toString());
+		}else System.out.println("NO");
 		
 		
 	}
 
-	private static void dfs(int cnt) {
-		if(cnt==N-1) {
-			boolean flag2 = true;
+	private static void permutation(int cnt) {
+		if(cnt==N) {
+			boolean flag = true;
 			for (int i = 0; i < M; i++) {
-				int ycc1 = log_info[i][0];
-				int ycc2 = log_info[i][1];
-				int interst = log_info[i][2];
+				int ycc1 = log[i][0];
+				int ycc2 = log[i][1];
+				int title = log[i][2];
 				
 				int frog1 = lotus[ycc1];
 				int frog2 = lotus[ycc2];
-				if(frog_interest[frog1][interst]!=frog_interest[frog2][interst]) {
-					flag2 = false;
+				
+				if(frog[frog1][title]!=frog[frog2][title]) {
+					flag = false;
 					break;
 				}
+				
 			}
-			if(flag2) flag=true;
+			
+			if(flag) {
+				result = true;
+				sb.append("YES\n");
+				for (int i = 0; i < N; i++) {
+					sb.append((lotus[i]+1)+" ");
+				}
+			} 
 			return;
 		}
-
 		
-		if(flag) return;
-		for (int i = 0; i < N; i++) {
-			if(!visited[i]) {
-				int frog_num = i;
-				for (int j = 0; j < frog_lotus[frog_num].size(); j++) {
-					int ycc = frog_lotus[frog_num].get(j);
-					if(lotus[ycc]==-1) {
-						lotus[ycc] = frog_num;
-						visited[frog_num]= true;
-						dfs(cnt+1);
-						if(flag) return;
-						visited[frog_num]= false;
-						lotus[ycc] = -1;
-					}
-				}
+		if(result) return;
+		for (int i = 0; i < frog_lotus[cnt].size(); i++) {
+			int ycc = frog_lotus[cnt].get(i);
+			if(lotus[ycc]==-1) {
+				lotus[ycc] = cnt;
+				permutation(cnt+1);
+				if(result) return;
+				lotus[ycc] = -1;
 			}
 		}
 		
 	}
 
-
+	
 
 }
