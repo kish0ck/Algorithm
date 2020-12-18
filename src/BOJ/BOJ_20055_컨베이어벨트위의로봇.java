@@ -10,16 +10,37 @@ public class BOJ_20055_컨베이어벨트위의로봇 {
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine()," ");
-		int N = Integer.parseInt(st.nextToken()); // 2 ≤ N ≤ 100
-		int K = Integer.parseInt(st.nextToken()); // 1 ≤ K ≤ 2N
-		st = new StringTokenizer(br.readLine());
-		int[] arr = new int[2*N]; // i번째 내구도
-		// arr[0]   올라가는 위치
-		// arr[N-1] 내려가는 위치
-		for (int i = 0; i < 2*N; i++) {
-			arr[i] = Integer.parseInt(st.nextToken());
+		int N = Integer.parseInt(st.nextToken()); // 1 ~ 2N-1
+		int K = Integer.parseInt(st.nextToken()); // 단계
+		st = new StringTokenizer(br.readLine()," ");
+		
+		int[][] cb = new int[2][N]; // 컨베이어벨트
+		int[][] arr = new int[2][N]; // 내구도
+		for (int i = 0; i < N; i++) {
+			arr[0][i] = Integer.parseInt(st.nextToken());
 		}
-		int[] belt = new int[2*N];
+		for (int i = N-1; i > -1; i--) {
+			arr[1][i] = Integer.parseInt(st.nextToken());
+		}
+		
+		for (int i = 0; i < 2; i++) {
+			for (int j = 0; j < N; j++) {
+				System.out.print(arr[i][j]+" ");
+			}System.out.println();
+		}
+		
+		int cnt = 0; // 카운트 개수
+		
+		// 회전
+		while(true) {
+			for (int i = 1; i < N-1; i++) {
+				if(cb[0][i]==-1) {
+					
+				}
+			}
+			
+		}
+		
 		
 	}
 
