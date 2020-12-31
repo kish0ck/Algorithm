@@ -3,128 +3,104 @@ package BOJ;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class BOJ_5427_불_Main {
-
-	private static int[] dx;
-	private static int[] dy;
-	private static Queue<int[]> sg;
-	private static int w;
-	private static int h;
-	private static boolean check;
-
-	public static void main(String[] args) throws NumberFormatException, IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		int tc = Integer.parseInt(br.readLine());
-		StringTokenizer st;
-		for (int t = 0; t < tc; t++) {
-			st = new StringTokenizer(br.readLine()," ");
-			w = Integer.parseInt(st.nextToken());
-			h = Integer.parseInt(st.nextToken());
-			char[][] map = new char[h][w];
-			sg = new LinkedList<int[]>();
-			for (int i = 0; i < h; i++) {
-				map[i] = br.readLine().toCharArray();
-				for (int j = 0; j < w; j++) {
-					if(map[i][j]=='@') {
-						sg.add(new int[] {i,j});
-					}
-				}
-			}
-			dx = new int[] {0,0,1,-1};
-			dy = new int[] {1,-1,0,0};
-			int time = 0;
-			check = false;
-			while(true) {
-				time++;
-				map = fire(map);
-//				System.out.println(time+"번째 map");
-//				printMap(map);
-				move(map);
-//				System.out.println("상근이");
-//				for (int[] i : sg) {
-//		            System.out.println(Arrays.toString(i));
-//		        }
-				
-				if(check) {
-					System.out.println(time+1);
-					break;
-				}
-				if(sg.isEmpty()) {
-					System.out.println("IMPOSSIBLE");
-					break;
-				}
-			}
-			
-			
-		}
-	}
-
-	private static void printMap(char[][] map) {
-		for (int i = 0; i < h; i++) {
-			for (int j = 0; j < w; j++) {
-				System.out.print(map[i][j]+" ");
-			}System.out.println();
-		}
-	}
-
-	private static void move(char[][] map) {
-		boolean[][] visited = new boolean[h][w];
-loop:	for (int i = 0; i < sg.size(); i++) {
-			int[] cur = sg.poll();
-			int r = cur[0];
-			int c = cur[1];
-			visited[r][c] = true;
-			for (int d = 0; d < 4; d++) {
-				int nr = dx[d] + r;
-				int nc = dy[d] + c;
-				if(nr>-1&&nc>-1&&nr<h&&nc<w&&map[nr][nc]=='.'&&!visited[nr][nc]) {
-					visited[nr][nc] = true;
-					if(nr==0||nc==0||nr==h-1||nc==w-1) {
-						check = true;
-						break loop;
-					}
-					sg.offer(new int[] {nr, nc});
-				}
-			}
-		}
-		
-	}
-
-	private static char[][] fire(char[][] map) {
-		char[][] clone = new char[h][w];
-		for (int i = 0; i < h; i++) {
-			clone[i] = map[i].clone();
-		}
-		Queue<int[]> q = new LinkedList<int[]>();
-		boolean[][] visited = new boolean[h][w];
-		for (int i = 0; i < h; i++) {
-			for (int j = 0; j < w; j++) {
-				if(map[i][j]=='*') {
-					q.offer(new int[] {i, j});
-				}
-			}
-		}
-		while(!q.isEmpty()) {
-			int[] cur = q.poll();
-			for (int d = 0; d < 4; d++) {
-				int ni = cur[0] + dx[d];
-				int nj = cur[1] + dy[d];
-				if(ni>-1&&nj>-1&&ni<h&&nj<w&&map[ni][nj]!='#'&&!visited[ni][nj]) {
-					visited[ni][nj] = true;
-					clone[ni][nj] = '*';
-				}
-			}
-		}
-		
-		return clone;
-	}
-
+   static class pair {
+      int x, y;
+      public pair(int x, int y) {
+         this.x = x; this.y = y;
+      }
+   }
+   public static void main(String[] args) throws NumberFormatException, IOException {
+      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+      int T = Integer.parseInt(br.readLine());
+      int[] dr = {-1,1,0,0}, dc = {0,0,-1,1};
+      for(int t=0; t<T; t++) {
+         StringTokenizer st = new StringTokenizer(br.readLine());
+         int C = Integer.parseInt(st.nextToken());
+         int R = Integer.parseInt(st.nextToken());
+         // wall : 벽의 위치를 저장하기 위한 배열
+         boolean[][] wall = new boolean[R][C];
+         // flag : 방문한 위치와 불이 퍼진 위치를 저장하기 위한 배열
+         boolean[][] flag = new boolean[R][C];
+         // user : 상근이가 이동할 위치를 탐색하기 위한 큐
+         Queue<pair> user = new LinkedList<>();
+         // fire : 불을 퍼뜨리기 위한 큐
+         Queue<pair> fire = new LinkedList<>();
+         for(int i=0; i<R; i++) {
+            String s = br.readLine();
+            for(int j=0; j<C; j++) {
+               char ch = s.charAt(j);
+               switch(ch) {
+               case '.' :
+                  break;
+               case '#' :
+                  wall[i][j] = true;
+                  break;
+               case '*' :
+                  // 불이 난 위치이면 flag를 체크해주고 fire 큐에 위치 저장
+                  flag[i][j] = true;
+                  fire.offer(new pair(i, j));
+                  break;
+               case '@' :
+                  // 상근이의 위치를 user 큐에 저장하고 flag 체크
+                  flag[i][j] = true;
+                  user.offer(new pair(i, j));
+                  break;
+               }
+            }
+         }
+         
+         int answer = 0;
+         boolean f = true;
+         bfs : 
+         while(true) {
+            // 불이 1번 퍼지고 상근이가 1번 이동하면 1초가 증가하는 것이므로 answer를 1증가시킴
+            answer++;
+            int flen = fire.size();
+            int ulen = user.size();
+            // user 큐가 비어있다 = 상근이가 모든 위치를 탐색했음에도 빌딩을 탈출하지 못했다 이므로 IMPOSSIBLE
+            if(ulen == 0) {
+               f = false;
+               break;
+            }
+            // 상근이가 이동하기 전에 fire 큐를 이용하여 불을 먼저 퍼뜨린다
+            while(flen-->0) {
+               pair cur = fire.poll();
+               int x = cur.x;
+               int y = cur.y;
+               for(int i=0; i<4; i++) {
+                  int dx = x + dr[i];
+                  int dy = y + dc[i];
+                  if(dx<0 || dy<0 || dx>=R || dy>=C) continue;
+                  if(flag[dx][dy] || wall[dx][dy]) continue;
+                  flag[dx][dy] = true;
+                  fire.offer(new pair(dx, dy));
+               }
+            }
+            // 상근이 이동하기
+            while(ulen-->0) {
+               pair cur = user.poll();
+               int x = cur.x;
+               int y = cur.y;
+               for(int i=0; i<4; i++) {
+                  int dx = x + dr[i];
+                  int dy = y + dc[i];
+                  if(dx<0 || dy<0 || dx>=R || dy>=C) {
+                     break bfs;
+                  }
+                  if(flag[dx][dy] || wall[dx][dy]) continue;
+                  flag[dx][dy] = true;
+                  user.offer(new pair(dx, dy));
+               }
+            }
+            
+         }
+         if(!f) System.out.println("IMPOSSIBLE");
+         else System.out.println(answer);
+      }
+   }
 }
