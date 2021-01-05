@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
-public class BOJ_7576_토마토_Main_BFS {
+public class BOJ_7576_토마토_Main_DFS {
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -15,12 +15,15 @@ public class BOJ_7576_토마토_Main_BFS {
 		int M = Integer.parseInt(st.nextToken()); // 가로
 		int N = Integer.parseInt(st.nextToken()); // 세로
 		int[][] box = new int[N][M];
+		int cnt0 = 0; // 토마토개수
 		Queue<int[]> q = new LinkedList<int[]>();
 		for (int i = 0; i < N; i++) {
 			st = new StringTokenizer(br.readLine()," ");
 			for (int j = 0; j < M; j++) {
 				box[i][j] = Integer.parseInt(st.nextToken());
-				if(box[i][j]==1) {
+				if(box[i][j]==0) {
+					cnt0++;
+				} else if(box[i][j]==1) {
 					q.offer(new int[] {i, j});
 				}
 			}
