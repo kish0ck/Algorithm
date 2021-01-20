@@ -22,19 +22,22 @@ public class BOJ_10819_차이를최대로_Main {
 			arr[i] = Integer.parseInt(st.nextToken());
 		}
 		
-		Arrays.sort(arr);
+		Arrays.sort(arr); // next permutation을 쓰기위하여 정렬
 		
 		do {
+			// 연산하여 최댓값 구하기
 			int sum = 0;
 			for (int i = 0; i < N-1; i++) {
 				sum+=Math.abs(arr[i]-arr[i+1]);
 			}
 			if(sum>result) result=sum;
 		}while(np());
+		
 		System.out.println(result);
 	}
 
 	private static boolean np() {
+		// Next Permutation
 		int i = N-1;
 		while(i>0&&arr[i-1]>=arr[i]) i--;
 		
