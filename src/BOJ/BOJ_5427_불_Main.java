@@ -3,104 +3,106 @@ package BOJ;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class BOJ_5427_불_Main {
-   static class pair {
-      int x, y;
-      public pair(int x, int y) {
-         this.x = x; this.y = y;
-      }
-   }
-   public static void main(String[] args) throws NumberFormatException, IOException {
-      BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-      int T = Integer.parseInt(br.readLine());
-      int[] dr = {-1,1,0,0}, dc = {0,0,-1,1};
-      for(int t=0; t<T; t++) {
-         StringTokenizer st = new StringTokenizer(br.readLine());
-         int C = Integer.parseInt(st.nextToken());
-         int R = Integer.parseInt(st.nextToken());
-         // wall : 벽의 위치를 저장하기 위한 배열
-         boolean[][] wall = new boolean[R][C];
-         // flag : 방문한 위치와 불이 퍼진 위치를 저장하기 위한 배열
-         boolean[][] flag = new boolean[R][C];
-         // user : 상근이가 이동할 위치를 탐색하기 위한 큐
-         Queue<pair> user = new LinkedList<>();
-         // fire : 불을 퍼뜨리기 위한 큐
-         Queue<pair> fire = new LinkedList<>();
-         for(int i=0; i<R; i++) {
-            String s = br.readLine();
-            for(int j=0; j<C; j++) {
-               char ch = s.charAt(j);
-               switch(ch) {
-               case '.' :
-                  break;
-               case '#' :
-                  wall[i][j] = true;
-                  break;
-               case '*' :
-                  // 불이 난 위치이면 flag를 체크해주고 fire 큐에 위치 저장
-                  flag[i][j] = true;
-                  fire.offer(new pair(i, j));
-                  break;
-               case '@' :
-                  // 상근이의 위치를 user 큐에 저장하고 flag 체크
-                  flag[i][j] = true;
-                  user.offer(new pair(i, j));
-                  break;
-               }
-            }
-         }
-         
-         int answer = 0;
-         boolean f = true;
-         bfs : 
-         while(true) {
-            // 불이 1번 퍼지고 상근이가 1번 이동하면 1초가 증가하는 것이므로 answer를 1증가시킴
-            answer++;
-            int flen = fire.size();
-            int ulen = user.size();
-            // user 큐가 비어있다 = 상근이가 모든 위치를 탐색했음에도 빌딩을 탈출하지 못했다 이므로 IMPOSSIBLE
-            if(ulen == 0) {
-               f = false;
-               break;
-            }
-            // 상근이가 이동하기 전에 fire 큐를 이용하여 불을 먼저 퍼뜨린다
-            while(flen-->0) {
-               pair cur = fire.poll();
-               int x = cur.x;
-               int y = cur.y;
-               for(int i=0; i<4; i++) {
-                  int dx = x + dr[i];
-                  int dy = y + dc[i];
-                  if(dx<0 || dy<0 || dx>=R || dy>=C) continue;
-                  if(flag[dx][dy] || wall[dx][dy]) continue;
-                  flag[dx][dy] = true;
-                  fire.offer(new pair(dx, dy));
-               }
-            }
-            // 상근이 이동하기
-            while(ulen-->0) {
-               pair cur = user.poll();
-               int x = cur.x;
-               int y = cur.y;
-               for(int i=0; i<4; i++) {
-                  int dx = x + dr[i];
-                  int dy = y + dc[i];
-                  if(dx<0 || dy<0 || dx>=R || dy>=C) {
-                     break bfs;
-                  }
-                  if(flag[dx][dy] || wall[dx][dy]) continue;
-                  flag[dx][dy] = true;
-                  user.offer(new pair(dx, dy));
-               }
-            }
-            
-         }
-         if(!f) System.out.println("IMPOSSIBLE");
-         else System.out.println(answer);
-      }
-   }
+
+	private static int[] dr;
+	private static int[] dc;
+	private static int w;
+	private static int h;
+	private static Queue<int[]> user;
+	private static Queue<int[]> fire;
+	private static char[][] map;
+	private static boolean isBreak;
+	private static boolean user_status;
+	private static boolean[][] user_visited;
+	private static boolean[][] fire_visited;
+
+	public static void main(String[] args) throws NumberFormatException, IOException {
+		// 1. 입력
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int T = Integer.parseInt(br.readLine());
+		dr = new int[] { -1, 1, 0, 0 };
+		dc = new int[] { 0, 0, -1, 1 };
+		for (int tc = 0; tc < T; tc++) {
+			StringTokenizer st = new StringTokenizer(br.readLine(), " ");
+			w = Integer.parseInt(st.nextToken());
+			h = Integer.parseInt(st.nextToken());
+			map = new char[h][w];
+			user = new LinkedList<int[]>();
+			fire = new LinkedList<int[]>();
+			user_visited = new boolean[h][w];
+			fire_visited = new boolean[h][w];
+			for (int i = 0; i < h; i++) {
+				String str = br.readLine();
+				for (int j = 0; j < w; j++) {
+					map[i][j] = str.charAt(j);
+					if (map[i][j] == '@') {
+						user.add(new int[] { i, j });
+						user_visited[i][j] = true;
+						map[i][j] = '.';
+					} else if (map[i][j] == '*') {
+						fire_visited[i][j] = true;
+						fire.add(new int[] { i, j });
+					}
+				}
+			}
+
+			// 2. 구현
+			// '.': 빈 공간, '#': 벽, '@': 상근이의 시작 위치, '*': 불
+			int time = 0;
+			isBreak = false; // (T:탈출, F:탈출못함)
+			user_status = false; // 상근이 상태(T:움직임, F:못움직임)
+			while (true) {
+				time++;
+				user_status = false;
+				move(fire, '*');
+				move(user, '@');
+				if (!user_status) break;
+				if (isBreak) break;
+			}
+			if(isBreak) {
+				System.out.println(time);
+			} else if(!user_status) System.out.println("IMPOSSIBLE");
+
+		}
+	}
+
+	private static void move(Queue<int[]> q, char wh) {
+		int size = q.size();
+		for (int i = 0; i < size; i++) {
+			int[] cur = q.poll();
+			int r = cur[0];
+			int c = cur[1];
+			for (int d = 0; d < 4; d++) {
+				int nr = dr[d] + r;
+				int nc = dc[d] + c;
+				if (nr > -1 && nc > -1 && nr < h && nc < w) {
+					if (wh == '@') { // 상근이일때
+						if (!user_visited[nr][nc]&&map[nr][nc] == '.') {
+							user_visited[nr][nc] = true;
+							user_status = true;
+							user.add(new int[] { nr, nc });
+						}
+					} else { // 불일때
+						if (!fire_visited[nr][nc]&&map[nr][nc] != '#') {
+							fire_visited[nr][nc] = true;
+							map[nr][nc] = '*';
+							fire.add(new int[] { nr, nc });
+						}
+					}
+				} else {
+					if (wh == '@') {
+						isBreak = true;
+						break;
+					}
+				}
+			}
+		}
+	}
+
 }
