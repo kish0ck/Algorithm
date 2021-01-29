@@ -12,13 +12,14 @@ public class BOJ_2589_보물섬_Main {
 	private static int result;
 	private static int r;
 	private static int c;
+	private static char[][] map;
 
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		StringTokenizer st = new StringTokenizer(br.readLine(), " ");
 		r = Integer.parseInt(st.nextToken());
 		c = Integer.parseInt(st.nextToken());
-		char[][] map = new char[r][c];
+		map = new char[r][c];
 		for (int i = 0; i < r; i++) {
 			map[i] = br.readLine().toCharArray();
 		}
@@ -30,7 +31,7 @@ public class BOJ_2589_보물섬_Main {
 				}
 			}
 		}
-		System.out.println(result-1);
+		System.out.println(result);
 	}
 
 	private static void bfs(int i, int j) {
@@ -41,22 +42,24 @@ public class BOJ_2589_보물섬_Main {
 		int[] dr = {0,0,1,-1}, dc = {1,-1,0,0};
 		visited[i][j] = true;
 		while(!q.isEmpty()) {
-			count++;
 			int size = q.size();
+			boolean flag = false;
 			for (int s = 0; s < size; s++) {
 				int[] cur = q.poll();
 				for (int d = 0; d < 4; d++) {
 					int nr = cur[0] + dr[d];
 					int nc = cur[1] + dc[d];
-					if(nr>-1&&nc>-1&&nr<r&&nc<r&&!visited[nr][nc]) {
+					if(nr>-1&&nc>-1&&nr<r&&nc<c&&!visited[nr][nc]&&map[nr][nc]=='L') {
+						flag = true;
 						visited[nr][nc] = true;
 						q.offer(new int[] {nr,nc});
 					}
 				}
 			}
+			if(!flag) break;
+			count++;
 		}
 		if(count>result) result = count;
-		
 	}
 
 }
