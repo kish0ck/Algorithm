@@ -10,13 +10,13 @@ public class BOJ_1003_피보나치함수_Main {
 		for (int t = 0; t < T; t++) {
 			 int n = sc.nextInt();
 	            int[][] arr = new int[n+1][2];
-	            // 0일때
-	            if(n==0) {
+	            
+	            if(n==0) { // 0일때
 	                System.out.println("1 0");
 	                continue;
 	            }
-	            // 1일때
-	            if(n==1){
+	            
+	            if(n==1){ // 1일때
 	                System.out.println("0 1");
 	                continue;
 	            }
