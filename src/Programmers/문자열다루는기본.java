@@ -14,7 +14,7 @@ public class 문자열다루는기본 {
 //		String s = "1234";
 		System.out.println(solution(s));
 	}
-	public boolean solution(String s) {
+	public static boolean solution(String s) {
         boolean answer = true;
         int sLength = s.length();
         if(sLength==4 || sLength==6){
